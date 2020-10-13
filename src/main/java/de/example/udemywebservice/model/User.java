@@ -1,5 +1,7 @@
 package de.example.udemywebservice.model;
 
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +9,14 @@ import java.util.List;
 public class User {
 
     private Integer id;
+
+    @Size(min = 2,message = "name should have at least 2 characters")
     private String name;
+
+    @Past
     private Date date;
+
+
     private List<Post> posts;
 
 //public static final User EMPTY = new User(0, "not defined", new Date());

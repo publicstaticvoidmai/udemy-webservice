@@ -5,12 +5,18 @@ import de.example.udemywebservice.model.Post;
 import de.example.udemywebservice.model.User;
 import de.example.udemywebservice.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
@@ -30,19 +36,30 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User getOneUser(@PathVariable int id){
+    public EntityModel<User> getOneUser(@PathVariable int id){
         User user = userDaoService.findOne(id);
+
+        //HATEOAS
+        //instead of just returning data, now data + link
+        EntityModel<User> resource = EntityModel.of(user);
+
+        //what link: (getAllUsers)
+        WebMvcLinkBuilder linkTo =
+                linkTo(methodOn(this.getClass()).getAllUsers());
+
+        //how to refer link:
+        resource.add(linkTo.withRel("all-users"));
 
         if(user == null){
             throw new UserNotFoundException("id-"+ id );
         }
 
-        return user;
+        return resource;
     }
 
 
     @PostMapping("/users")
-    public ResponseEntity<Object> createUser(@RequestBody User user){
+    public ResponseEntity<Object> createUser(@Valid @RequestBody User user){
         User savedUser = userDaoService.save(user);
 
         URI location = ServletUriComponentsBuilder
