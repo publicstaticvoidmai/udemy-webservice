@@ -1,13 +1,20 @@
 package de.example.udemywebservice.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue
     private Integer id;
 
     @Size(min = 2,message = "name should have at least 2 characters")
@@ -16,8 +23,7 @@ public class User {
     @Past
     private Date date;
 
-
-    private List<Post> posts;
+   // private List<Post> posts;
 
 //public static final User EMPTY = new User(0, "not defined", new Date());
     //instead default constructor? right use?
@@ -27,7 +33,7 @@ public class User {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.posts = new ArrayList<>();
+       // this.posts = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -54,13 +60,13 @@ public class User {
         this.date = date;
     }
 
-    public List<Post> getPosts() {
+    /*public List<Post> getPosts() {
         return posts;
-    }
+    }*/
 
-    public void setPosts(List<Post> posts) {
+   /* public void setPosts(List<Post> posts) {
         this.posts = posts;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -71,12 +77,12 @@ public class User {
                 '}';
     }
 
-    public int addPost(Post post){
+    /*public int addPost(Post post){
         this.posts.add(post);
         post.setId(this.getPosts().indexOf(post));
         return this.getPosts().indexOf(post);
 
-    }
+    }*/
 
     /*public String postsToString(){
         String result = "";

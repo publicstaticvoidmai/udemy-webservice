@@ -17,7 +17,7 @@ public class UserDaoService {
 
     static {
         User mai = new User(0, "Mai", new Date());
-        mai.addPost(new Post("MaiLife"));
+       // mai.addPost(new Post("MaiLife"));
         users.add(mai);
         users.add(new User(1, "Mia", new Date()));
         users.add(new User(2, "May", new Date()));
@@ -53,7 +53,7 @@ public class UserDaoService {
     }
 
 
-    public Post deletePost(int UserId, int postId){
+   /* public Post deletePost(int UserId, int postId){
         if(findOne(UserId) != null){
             return users.get(UserId).getPosts().remove(postId);
         }
@@ -65,5 +65,5 @@ public class UserDaoService {
             return users.get(UserId).addPost(post);
         }
         return -1;
-    }
+    }*/
 }
