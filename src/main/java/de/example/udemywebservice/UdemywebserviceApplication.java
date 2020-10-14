@@ -11,3 +11,13 @@ public class UdemywebserviceApplication {
 	}
 
 }
+
+/*<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-security</artifactId>
+</dependency>*/
+
+/* -> auth is needed!
+- in application properties username and password can be set
+- every request need Auth
+ */
