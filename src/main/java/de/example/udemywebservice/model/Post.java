@@ -1,13 +1,21 @@
 package de.example.udemywebservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+
+@Entity
 public class Post {
 
+    @Id
+    @GeneratedValue
     private Integer id; //id = arraylist index
     private String post;
 
-    public Post(String post) {
-        this.post = post;
-    }
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JsonIgnore
+    private User user;
+
 
     public String getPost() {
         return post;
@@ -25,8 +33,19 @@ public class Post {
         return id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
-    public String toString(){
-        return "id= " + id + ", post: " + post;
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", post='" + post + '\'' +
+                '}';
     }
 }

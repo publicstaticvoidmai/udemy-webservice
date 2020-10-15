@@ -1,7 +1,9 @@
 package de.example.udemywebservice.controller;
 
 import de.example.udemywebservice.exception.UserNotFoundException;
+import de.example.udemywebservice.model.Post;
 import de.example.udemywebservice.model.User;
+import de.example.udemywebservice.repository.PostRepository;
 import de.example.udemywebservice.repository.UserRepository;
 import de.example.udemywebservice.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -23,11 +26,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserJPAController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final PostRepository postRepository;
 
     @Autowired
-    private UserDaoService userDaoService;
+    public UserJPAController(UserRepository userRepository, PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+    }
+
+    /*@Autowired
+    private UserDaoService userDaoService;*/
 
 
     /*public UserJPAController(UserDaoService userDaoService) {
@@ -69,7 +79,7 @@ public class UserJPAController {
 
     @PostMapping("/jpa/users")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user){
-        User savedUser = userDaoService.save(user);
+        User savedUser = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -80,21 +90,49 @@ public class UserJPAController {
         return ResponseEntity.created(location).build();
     }
 
-   /* @GetMapping("/users/{id}/posts")
+    @GetMapping("/jpa/users/{id}/posts")
     public List<Post> getAllPostsfromUser(@PathVariable int id){
-        if(userDaoService.findOne(id)!= null){
-            return userDaoService.findOne(id).getPosts();
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(!userOptional.isPresent()){
+            throw new UserNotFoundException("id-" + id);
         }
-        throw new UserNotFoundException("id-"+ id);
-    }*/
+
+        return userOptional.get().getPosts();
+    }
 
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUserbyId(@PathVariable int id){
-        if(userDaoService.deleteById(id) == null){
-            throw new UserNotFoundException("id-"+ id);
+        userRepository.deleteById(id);
         }
+
+
+
+    //TODO: funktioniert nicht
+    @PostMapping("/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createPost(@Valid @RequestBody int id,@RequestBody Post post){
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(!userOptional.isPresent()){
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        User user = userOptional.get();
+
+        post.setUser(user);
+
+        postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(post.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
     }
 
 
 
-}
+

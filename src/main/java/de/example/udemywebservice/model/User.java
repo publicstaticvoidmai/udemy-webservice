@@ -3,6 +3,7 @@ package de.example.udemywebservice.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -23,17 +24,26 @@ public class User {
     @Past
     private Date date;
 
-   // private List<Post> posts;
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 
-//public static final User EMPTY = new User(0, "not defined", new Date());
+    //public static final User EMPTY = new User(0, "not defined", new Date());
     //instead default constructor? right use?
-    protected User(){} //default constructor notwendig?
 
+    protected User(){} //default constructor notwendig?
     public User(Integer id, String name, Date date) {
         this.id = id;
         this.name = name;
         this.date = date;
        // this.posts = new ArrayList<>();
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 
     public Integer getId() {
